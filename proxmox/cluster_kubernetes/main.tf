@@ -1,7 +1,7 @@
 # ----------------------------------------
 # Cloud-init fixo
 # ----------------------------------------
-module "ubuntu_base_cloud_init" {
+module "cloud_init" {
   source           = "./modules/cloud_init"
   node_name        = var.node_name
   datastore_id     = var.datastore_config_id
@@ -18,10 +18,10 @@ module "ubuntu_template" {
   source           = "./modules/templates"
   node_name        = var.node_name
   datastore_id     = var.datastore_template_id
-  template_name    = "ubuntu-template"
-  image_url        = "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img"
+  template_name    = "ubuntu24-template"
+  image_url        = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
   content_type     = "import"
-  file_name         = "ubuntu-22.04.qcow2"
+  file_name         = "ubuntu-24.04.qcow2"
 }
 
 module "debian_template" {
@@ -30,10 +30,10 @@ module "debian_template" {
   source           = "./modules/templates"
   node_name        = var.node_name
   datastore_id     = var.datastore_template_id
-  template_name    = "debian-template"
-  image_url        = "https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2"
+  template_name    = "debian13-template"
+  image_url        = "https://cloud.debian.org/images/cloud/trixie/latest/debian-13-genericcloud-amd64.qcow2"
   content_type     = "import"
-  file_name         = "debian-12.qcow2"
+  file_name         = "debian-13.qcow2"
 }
 
 # ----------------------------------------
@@ -43,12 +43,13 @@ module "app01" {
   source             = "./modules/clone"
   name               = "app01"
   hostname           = "app01"
+  vm_ssh_username    = var.vm_ssh_username
   node_name          = var.node_name
   datastore_id       = var.datastore_vm_id
   template_id        = module.ubuntu_template.template_id
-  cloud_init_file_id = module.ubuntu_base_cloud_init.cloud_init_id
+  cloud_init_file_id = module.cloud_init.cloud_init_id
   memory_mb          = 2048
-  vlan_id            = 700
+  vlan_id            = 30
   provider_name      = var.provider_name
   provider_version   = var.provider_version
 }
@@ -60,9 +61,9 @@ module "db01" {
   node_name          = var.node_name
   datastore_id       = var.datastore_vm_id
   template_id        = module.debian_template.template_id
-  cloud_init_file_id = module.ubuntu_base_cloud_init.cloud_init_id
+  cloud_init_file_id = module.cloud_init.cloud_init_id
   memory_mb          = 4096
-  vlan_id            = 700
+  vlan_id            = 30
   provider_name      = var.provider_name
   provider_version   = var.provider_version
 }

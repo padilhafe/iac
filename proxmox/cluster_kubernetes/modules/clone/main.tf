@@ -1,4 +1,4 @@
-resource "random_password" "vm_password" {
+resource "random_password" "vm_ssh_password" {
   length           = 16
   override_special = "_%@"
   special          = true
@@ -8,7 +8,6 @@ resource "random_password" "vm_password" {
 resource "proxmox_virtual_environment_vm" "clone" {
   name      = var.name
   node_name = var.node_name
-
 
   clone {
     vm_id = var.template_id
@@ -27,6 +26,11 @@ resource "proxmox_virtual_environment_vm" "clone" {
   }
 
   initialization {
+    user_account {
+      username = var.vm_ssh_username
+      password = random_password.vm_ssh_password.result
+    }
+    
     user_data_file_id = var.cloud_init_file_id
     ip_config {
       ipv4 { address = var.ip_address }

@@ -10,11 +10,11 @@ output "vm_name" {
 
 output "vm_ipv4" {
   description = "Endereço IPv4 da VM (primeira interface)"
-  value       = proxmox_virtual_environment_vm.clone.ipv4_addresses[0][0]
+  value       = proxmox_virtual_environment_vm.clone.ipv4_addresses[1][0]
 }
 
-output "vm_password" {
+output "vm_ssh_password" {
   description = "Senha do usuário da VM"
-  value       = random_password.vm_password.result
+  value       = random_password.vm_ssh_password.result
   sensitive   = true
 }

@@ -9,6 +9,9 @@ variable "cloud_init_file_id" {
   description = "ID do cloud-init compartilhado"
   type        = string
 }
+variable "vm_ssh_username" {
+  default = "iac"
+}
 variable "cpu_cores" {
   default = 2
 }
