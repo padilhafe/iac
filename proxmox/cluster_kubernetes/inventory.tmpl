@@ -1,23 +1,41 @@
+# This inventory describe a HA typology with stacked etcd (== same nodes as control plane)
+# and ${length(worker.index)} worker nodes
+# See https://docs.ansible.com/ansible/latest/inventory_guide/intro_inventory.html
+# for tips on building your inventory
+
+# Configure 'ip' variable to bind kubernetes services on a different ip than the default iface
+# We should set etcd_member_name for etcd cluster. The node that are not etcd members do not need to set the value,
+# or can set the empty string value.
+
 all:
   children:
-    masters:
+    kube_control_plane:
       hosts:
 %{ for idx in master.index ~}
         ${master.vm_name[idx]}:
           ansible_host: ${master.ip_address[idx]}
           ansible_user: ${master.user}
+          # ip: ${master.ip_address[idx]}
+          # etcd_member_name: etcd${idx + 1}
 %{ endfor ~}
-    workers:
+    
+    etcd:
+      children:
+        kube_control_plane: {}
+    
+    kube_node:
       hosts:
 %{ for idx in worker.index ~}
         ${worker.vm_name[idx]}:
           ansible_host: ${worker.ip_address[idx]}
           ansible_user: ${worker.user}
+          # ip: ${worker.ip_address[idx]}
 %{ endfor ~}
+    
     k8s_cluster:
       children:
-        masters:
-        workers:
+        kube_control_plane: {}
+        kube_node: {}
       vars:
         ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
         ansible_ssh_private_key_file: ${ssh_private_key}

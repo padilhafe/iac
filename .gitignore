@@ -58,3 +58,6 @@ terraform.rc
 
 # Ansible Inventory
 inventory.yml
+
+# Ignora o kubespray
+kubespray/
