@@ -11,6 +11,10 @@ variable "cloud_init_file_id" {
 variable "vm_ssh_username" {
   default = "iac"
 }
+variable "vm_ssh_public_key" {
+  type = string
+  default = null
+}
 variable "cpu_cores" {
   default = 2
 }

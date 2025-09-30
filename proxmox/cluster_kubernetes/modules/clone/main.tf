@@ -31,6 +31,7 @@ resource "proxmox_virtual_environment_vm" "clone" {
     user_account {
       username = var.vm_ssh_username
       password = random_password.vm_ssh_password.result
+      keys = var.vm_ssh_public_key != null ? [var.vm_ssh_public_key,] : null
     }
     
     ip_config {
@@ -53,6 +54,6 @@ resource "proxmox_virtual_environment_vm" "clone" {
   disk {
     size         = var.disk_size_gb
     datastore_id = var.datastore_id
-    interface    = "virtio0"
+    interface    = "scsi"
   }
 }

@@ -28,6 +28,12 @@ variable "proxmox_ve_ssh_private_key" {
   default     = "/home/felipepadilha/.ssh/id_ed25519"
 }
 
+variable "vm_ssh_public_key" {
+  type        = string
+  description = "Chave pública SSH para as VMs"
+  default     = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMLko3dGIj36xzQ5tMW8qo55U0GeVGLlEaOV7/0OAwOh felipepadilha@DESKTOP-FQM9KAA\n"
+}
+
 variable "datastore_config_id" {
   type        = string
   description = "Datastore para Snippets"

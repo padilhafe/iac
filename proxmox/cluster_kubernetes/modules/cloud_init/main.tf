@@ -1,4 +1,4 @@
-resource "proxmox_virtual_environment_file" "ubuntu_base" {
+resource "proxmox_virtual_environment_file" "quemu_agent" {
   content_type = "snippets"
   datastore_id = var.datastore_id
   node_name    = var.node_name
