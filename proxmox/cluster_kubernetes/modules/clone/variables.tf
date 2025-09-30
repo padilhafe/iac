@@ -1,9 +1,8 @@
-variable "provider_name" {}
-variable "provider_version" {}
 variable "name" {}
 variable "hostname" {}
 variable "node_name" {}
 variable "datastore_id" {}
+variable "disk_size_gb" {}
 variable "template_id" {}
 variable "cloud_init_file_id" {
   description = "ID do cloud-init compartilhado"
@@ -19,8 +18,14 @@ variable "memory_mb" {
   default = 1024
 }
 variable "ip_address" {
-  default = "dhcp"
+  type = string
+  default = null
 }
+variable "gateway" {
+  type = string
+  default = null
+}
+
 variable "vlan_id" {
   default = 0
 }

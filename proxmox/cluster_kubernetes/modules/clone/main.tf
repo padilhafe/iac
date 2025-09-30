@@ -26,15 +26,20 @@ resource "proxmox_virtual_environment_vm" "clone" {
   }
 
   initialization {
+    user_data_file_id = var.cloud_init_file_id
+
     user_account {
       username = var.vm_ssh_username
       password = random_password.vm_ssh_password.result
     }
     
-    user_data_file_id = var.cloud_init_file_id
     ip_config {
-      ipv4 { address = var.ip_address }
+      ipv4 {
+        address = var.ip_address != null && var.ip_address != "" ? var.ip_address : "dhcp"
+        gateway = var.ip_address != null && var.ip_address != "" ? var.gateway    : null
+      }
     }
+
     dns {
       servers = var.dns_servers
     }
@@ -43,5 +48,11 @@ resource "proxmox_virtual_environment_vm" "clone" {
   network_device {
     bridge  = var.bridge
     vlan_id = var.vlan_id
+  }
+
+  disk {
+    size         = var.disk_size_gb
+    datastore_id = var.datastore_id
+    interface    = "virtio0"
   }
 }

@@ -1,13 +1,32 @@
-output "app01_ip" { value = module.app01.vm_ipv4 }
-output "app01_id" { value = module.app01.vm_id }
-output "app01_password" { 
-  value = module.app01.vm_ssh_password
-  sensitive = true
+output "master_ids" {
+  description = "IDs de todos os nós master"
+  value       = [for m in module.masters : m.vm_id]
 }
 
-output "db01_ip"  { value = module.db01.vm_ipv4 }
-output "db01_id"  { value = module.db01.vm_id }
-output "db01_password" { 
-  value = module.db01.vm_ssh_password
-  sensitive = true
+output "master_ips" {
+  description = "Endereços IP de todos os nós master"
+  value       = [for m in module.masters : m.vm_ipv4]
 }
+
+output "master_passwords" {
+  description = "Senhas de todos os nós master"
+  value       = [for m in module.masters : m.vm_ssh_password]
+  sensitive   = true
+}
+
+output "worker_ids" {
+  description = "IDs de todos os nós worker"
+  value       = [for m in module.workers : m.vm_id]
+}
+
+output "worker_ips" {
+  description = "Endereços IP de todos os nós worker"
+  value       = [for m in module.workers : m.vm_ipv4]
+}
+
+output "worker_passwords" {
+  description = "Senhas de todos os nós worker"
+  value       = [for m in module.workers : m.vm_ssh_password]
+  sensitive   = true
+}
+

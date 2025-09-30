@@ -1,3 +1,6 @@
+# Arquivos de env
+.env
+
 # Playbooks que não precisam ser mais atualizados
 ansible/bootstrap.yml
 
