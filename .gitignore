@@ -55,3 +55,6 @@ override.tf.json
 .terraformrc
 terraform.rc
 .terraform.lock.hcl
+
+# Ansible Inventory
+inventory.yml

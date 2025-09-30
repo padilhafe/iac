@@ -12,6 +12,9 @@ init:
 destroy:
 	@terraform destroy -auto-approve
 
+ping:
+	@ansible -i inventory.yml all -m ping
+
 run: update-provider init apply
 
 .PHONY: update-provider init apply plan destroy run
