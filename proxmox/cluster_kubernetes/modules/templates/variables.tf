@@ -1,6 +1,3 @@
-variable "provider_name" {}
-variable "provider_version" {}
-
 variable "node_name" {
   description = "Node Proxmox onde o template será criado"
   type        = string
