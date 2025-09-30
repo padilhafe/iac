@@ -1,16 +1,6 @@
 # ----------------------------------------
-# Templates de SO
+# Template Ubuntu Noble Numbat
 # ----------------------------------------
-module "debian_template" {
-  source        = "./modules/templates"
-  node_name     = var.node_name
-  datastore_id  = var.template_datastore_id
-  template_name = "debian13-template"
-  image_url     = "https://cloud.debian.org/images/cloud/trixie/latest/debian-13-genericcloud-amd64.qcow2"
-  content_type  = "import"
-  file_name     = "debian-13.qcow2"
-}
-
 module "ubuntu_template" {
   source        = "./modules/templates"
   node_name     = var.node_name
@@ -51,7 +41,7 @@ module "masters" {
   disk_size_gb          = 20
   template_id           = module.ubuntu_template.template_id
   cpu_cores             = 2
-  ip_address            = "10.38.20.2${count.index + 1}/24"
+  ip_address            = "${var.network_prefix}.2${count.index + 1}/${var.cidr}"
   gateway               = var.gateway
   memory_mb             = 4096
   vlan_id               = var.vlan_id
@@ -71,13 +61,13 @@ module "workers" {
   vm_datastore_id       = var.vm_datastore_id
   snippets_datastore_id = var.snippets_datastore_id
   disk_size_gb          = 50
-  template_id           = module.debian_template.template_id
+  template_id           = module.ubuntu_template.template_id
   cpu_cores             = 2
-  ip_address            = "10.38.20.3${count.index + 1}/24"
+  ip_address            = "${var.network_prefix}.3${count.index + 1}/${var.cidr}"
   gateway               = var.gateway
   memory_mb             = 2048
   vlan_id               = var.vlan_id
   dns_servers           = var.dns_servers
-  depends_on            = [module.routeros]
+  depends_on            = [module.routeros, module.masters]
 }
 

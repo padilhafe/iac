@@ -13,19 +13,19 @@ variable "provider_version" {
 variable "node_name" {
   type        = string
   description = "Nó para rodar os recursos"
-  default     = "pve01"
+  default     = "pve"
 }
 
 variable "proxmox_ve_ssh_user" {
   type        = string
   description = "Usuário SSH para conectar ao Proxmox VE"
-  default     = "felipe.padilha"
+  default     = "root"
 }
 
 variable "proxmox_ve_ssh_private_key" {
   type        = string
   description = "Caminho para a chave privada SSH"
-  default     = "/Users/felipe.padilha/.ssh/id_ed25519"
+  default     = "/home/felipepadilha/.ssh/id_ed25519"
 }
 
 variable "vm_ssh_public_key" {
@@ -49,7 +49,7 @@ variable "template_datastore_id" {
 variable "vm_datastore_id" {
   type        = string
   description = "Datastore para VMs"
-  default     = "dados"
+  default     = "local-lvm"
 }
 
 variable "vm_ssh_username" {
@@ -61,25 +61,25 @@ variable "vm_ssh_username" {
 variable "interface" {
   type        = string
   description = "Interface física no roteador para a rede Kubernetes"
-  default     = "sfp-sfpplus2"
+  default     = "ether6"
 }
 
 variable "interface_name" {
   type        = string
   description = "Nome da interface VLAN para a rede Kubernetes"
-  default     = "VLAN820_K8S_NETWORK"
+  default     = "VLAN90_K8S_NETWORK"
 }
 
 variable "vlan_id" {
   type        = number
   description = "ID da VLAN para a rede Kubernetes"
-  default     = 820
+  default     = 90
 }
 
 variable "gateway" {
   type        = string
   description = "Gateway para a rede Kubernetes"
-  default     = "10.38.20.1"
+  default     = "10.90.90.1"
 }
 
 variable "cidr" {
@@ -88,8 +88,14 @@ variable "cidr" {
   default     = 24
 }
 
+variable "network_prefix" {
+  type        = string
+  description = "Prefixo de IP para os nós do Kubernetes"
+  default     = "10.90.90"
+}
+
 variable "dns_servers" {
   type        = list(string)
   description = "Servidores DNS para as VMs"
-  default     = ["1.1.1.1", "8.8.8.8"]
+  default     = ["192.168.10.30", "8.8.8.8"]
 }

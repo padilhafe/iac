@@ -61,3 +61,6 @@ inventory.yml
 
 # Ignora o kubespray
 kubespray/
+
+# Ignora ambientes virtuais Python
+.venv/

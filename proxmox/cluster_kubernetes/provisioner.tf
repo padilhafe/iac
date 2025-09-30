@@ -10,9 +10,7 @@ resource "null_resource" "ansible" {
   provisioner "local-exec" {
     command = <<EOT
 echo "Executa o Ansible no cluster Kubernetes..."
-ansible all \
-  -i inventory.yml \
-  -m ping 
+ansible all -i inventory.yml -m ping 
 EOT
   }
 
