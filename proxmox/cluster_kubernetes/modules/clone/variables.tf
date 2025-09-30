@@ -1,13 +1,10 @@
 variable "name" {}
 variable "hostname" {}
 variable "node_name" {}
-variable "datastore_id" {}
+variable "vm_datastore_id" {}
 variable "disk_size_gb" {}
 variable "template_id" {}
-variable "cloud_init_file_id" {
-  description = "ID do cloud-init compartilhado"
-  type        = string
-}
+
 variable "vm_ssh_username" {
   default = "iac"
 }
@@ -38,4 +35,16 @@ variable "bridge" {
 }
 variable "dns_servers" {
   default = ["1.1.1.1", "8.8.8.8"]
+}
+
+variable "snippets_datastore_id" {
+  description = "Datastore onde os snippets serão armazenados"
+  type        = string
+  default     = "snippets"
+}
+
+variable "vm_id" {
+  description = "ID da VM. Se não for fornecido, será atribuído automaticamente."
+  type        = number
+  default     = null
 }

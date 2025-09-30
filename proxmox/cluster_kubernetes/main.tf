@@ -1,33 +1,24 @@
 # ----------------------------------------
-# Cloud-init fixo
-# ----------------------------------------
-module "cloud_init" {
-  source           = "./modules/cloud_init"
-  node_name        = var.node_name
-  datastore_id     = var.datastore_config_id
-}
-
-# ----------------------------------------
 # Templates de SO
 # ----------------------------------------
 module "debian_template" {
-  source           = "./modules/templates"
-  node_name        = var.node_name
-  datastore_id     = var.datastore_template_id
-  template_name    = "debian13-template"
-  image_url        = "https://cloud.debian.org/images/cloud/trixie/latest/debian-13-genericcloud-amd64.qcow2"
-  content_type     = "import"
-  file_name        = "debian-13.qcow2"
+  source        = "./modules/templates"
+  node_name     = var.node_name
+  datastore_id  = var.template_datastore_id
+  template_name = "debian13-template"
+  image_url     = "https://cloud.debian.org/images/cloud/trixie/latest/debian-13-genericcloud-amd64.qcow2"
+  content_type  = "import"
+  file_name     = "debian-13.qcow2"
 }
 
 module "ubuntu_template" {
-  source           = "./modules/templates"
-  node_name        = var.node_name
-  datastore_id     = var.datastore_template_id
-  template_name    = "ubuntu24-template"
-  image_url        = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
-  content_type     = "import"
-  file_name        = "ubuntu-24.04.qcow2"
+  source        = "./modules/templates"
+  node_name     = var.node_name
+  datastore_id  = var.template_datastore_id
+  template_name = "ubuntu24-template"
+  image_url     = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
+  content_type  = "import"
+  file_name     = "ubuntu-24.04.qcow2"
 }
 
 
@@ -36,55 +27,57 @@ module "ubuntu_template" {
 # ----------------------------------------
 module "routeros" {
   source    = "./modules/router_os"
-  interface = "ether6"
-  name      = "VLAN90_K8S_NETWORK"
-  vlan_id   = 90
-  address   = "10.90.90.1"
-  cidr      = 24
+  interface = var.interface
+  name      = var.interface_name
+  vlan_id   = var.vlan_id
+  address   = var.gateway
+  cidr      = var.cidr
 }
 
 # ----------------------------------------
 # Clones de VMs
 # ----------------------------------------
 module "masters" {
-  count              = 3
-  source             = "./modules/clone"
-  name               = "k8s-master0${count.index + 1}"
-  hostname           = "k8s-master0${count.index + 1}"
-  vm_ssh_username    = var.vm_ssh_username
-  vm_ssh_public_key  = var.vm_ssh_public_key
-  node_name          = var.node_name
-  datastore_id       = var.datastore_vm_id
-  disk_size_gb       = 20
-  template_id        = module.ubuntu_template.template_id
-  cloud_init_file_id = module.cloud_init.cloud_init_id
-  cpu_cores          = 2
-  ip_address         = "10.90.90.2${count.index + 1}/24"
-  gateway            = "10.90.90.1"
-  memory_mb          = 4096
-  vlan_id            = 90
-  dns_servers        = ["192.168.10.30", "8.8.8.8"]
-  depends_on         = [module.routeros]
+  count                 = 3
+  source                = "./modules/clone"
+  name                  = "k8s-master0${count.index + 1}"
+  hostname              = "k8s-master0${count.index + 1}"
+  vm_ssh_username       = var.vm_ssh_username
+  vm_ssh_public_key     = var.vm_ssh_public_key
+  node_name             = var.node_name
+  vm_id                 = 300 + count.index + 1
+  vm_datastore_id       = var.vm_datastore_id
+  snippets_datastore_id = var.snippets_datastore_id
+  disk_size_gb          = 20
+  template_id           = module.ubuntu_template.template_id
+  cpu_cores             = 2
+  ip_address            = "10.38.20.2${count.index + 1}/24"
+  gateway               = var.gateway
+  memory_mb             = 4096
+  vlan_id               = var.vlan_id
+  dns_servers           = var.dns_servers
+  depends_on            = [module.routeros]
 }
 
 module "workers" {
-  count              = 3
-  source             = "./modules/clone"
-  name               = "k8s-worker0${count.index + 1}"
-  hostname           = "k8s-worker0${count.index + 1}"
-  vm_ssh_username    = var.vm_ssh_username
-  vm_ssh_public_key  = var.vm_ssh_public_key
-  node_name          = var.node_name
-  datastore_id       = var.datastore_vm_id
-  disk_size_gb       = 50
-  template_id        = module.debian_template.template_id
-  cloud_init_file_id = module.cloud_init.cloud_init_id
-  cpu_cores          = 2
-  ip_address         = "10.90.90.3${count.index + 1}/24"
-  gateway            = "10.90.90.1"
-  memory_mb          = 2048
-  vlan_id            = 90
-  dns_servers        = ["192.168.10.30", "8.8.8.8"]
-  depends_on         = [module.routeros]
+  count                 = 3
+  source                = "./modules/clone"
+  name                  = "k8s-worker0${count.index + 1}"
+  hostname              = "k8s-worker0${count.index + 1}"
+  vm_ssh_username       = var.vm_ssh_username
+  vm_ssh_public_key     = var.vm_ssh_public_key
+  node_name             = var.node_name
+  vm_id                 = 400 + count.index + 1
+  vm_datastore_id       = var.vm_datastore_id
+  snippets_datastore_id = var.snippets_datastore_id
+  disk_size_gb          = 50
+  template_id           = module.debian_template.template_id
+  cpu_cores             = 2
+  ip_address            = "10.38.20.3${count.index + 1}/24"
+  gateway               = var.gateway
+  memory_mb             = 2048
+  vlan_id               = var.vlan_id
+  dns_servers           = var.dns_servers
+  depends_on            = [module.routeros]
 }
 

@@ -8,6 +8,7 @@ resource "random_password" "vm_ssh_password" {
 resource "proxmox_virtual_environment_vm" "clone" {
   name      = var.name
   node_name = var.node_name
+  vm_id     = var.vm_id != null ? var.vm_id : null
 
   clone {
     vm_id = var.template_id
@@ -26,7 +27,7 @@ resource "proxmox_virtual_environment_vm" "clone" {
   }
 
   initialization {
-    user_data_file_id = var.cloud_init_file_id
+    user_data_file_id = proxmox_virtual_environment_file.cloud_init.id
 
     user_account {
       username = var.vm_ssh_username
@@ -53,7 +54,39 @@ resource "proxmox_virtual_environment_vm" "clone" {
 
   disk {
     size         = var.disk_size_gb
-    datastore_id = var.datastore_id
-    interface    = "scsi"
+    datastore_id = var.vm_datastore_id
+    interface    = "virtio0"
+  }
+}
+
+resource "proxmox_virtual_environment_file" "cloud_init" {
+  content_type = "snippets"
+  datastore_id = var.snippets_datastore_id
+  node_name    = var.node_name
+
+  source_raw {
+    data = <<-EOF
+      #cloud-config
+      hostname: ${var.hostname}
+      timezone: America/Sao_Paulo
+      users:
+        - name: ${var.vm_ssh_username}
+          sudo: ALL=(ALL) NOPASSWD:ALL
+          shell: /bin/bash
+          lock_passwd: false
+          passwd: ${random_password.vm_ssh_password.result}
+          ssh_authorized_keys:
+            - ${var.vm_ssh_public_key}
+      package_update: true
+      packages:
+        - qemu-guest-agent
+        - net-tools
+        - curl
+      runcmd:
+        - systemctl enable qemu-guest-agent
+        - systemctl start qemu-guest-agent
+    EOF
+
+    file_name = "${var.name}_cloud_init.yaml"
   }
 }
