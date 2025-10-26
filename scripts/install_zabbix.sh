@@ -354,6 +354,18 @@ else
 fi
 
 # -----------------------------
+# Instalar locales
+# -----------------------------
+print_info "Instalando locales para evitar erros de tradução..."
+if sudo apt install -q -y \
+    locales-all; then
+    print_success "Pacotes de locales  instalados com sucesso"
+else
+    print_error "Falha ao instalar pacotes de locales"
+    exit 1
+fi
+
+# -----------------------------
 # Instalar repositório do Zabbix
 # -----------------------------
 print_info "Configurando repositório do Zabbix..."
