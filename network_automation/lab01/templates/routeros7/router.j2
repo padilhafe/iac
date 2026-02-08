@@ -1,3 +1,10 @@
+/system identity
+set name="{{ hostname }}"
+
 {% for iface in interfaces %}
-/ip/address/add address={{ iface.ip }}/{{ iface.mask }} interface={{ iface.name }}
+/interface ethernet
+set {{ iface.name }} disabled=no
+
+/ip address
+add address={{ iface.ip }}/{{ iface.mask }} interface={{ iface.name }}
 {% endfor %}

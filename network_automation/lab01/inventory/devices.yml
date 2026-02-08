@@ -1,9 +1,8 @@
 devices:
   - name: huawei-ne40
     host: 192.168.10.238
-    vendor: huawei
+    vendor: huawei_vrp8
     device_type: huawei_vrpv8
-    template: router.j2
     username: automacao
     password: Password@123
     session_log: netmiko_huawei-ne40.log
@@ -17,9 +16,8 @@ devices:
 
   - name: huawei-ar1000v
     host: 192.168.10.236
-    vendor: huawei
+    vendor: huawei_vrp5
     device_type: huawei
-    template: router.j2
     username: automacao
     password: Password@123
     ssh_config_file: /etc/ssh/ssh_config
@@ -36,7 +34,6 @@ devices:
     host: 192.168.10.237
     vendor: routeros7
     device_type: mikrotik_routeros
-    template: router.j2
     username: automacao
     password: Password@123
     session_log: netmiko_chr.log

@@ -1,0 +1,8 @@
+sysname {{ hostname }}
+
+{% for iface in interfaces %}
+interface {{ iface.name }}
+ ip address {{ iface.ip }} {{ iface.mask }}
+ undo shutdown
+ quit
+{% endfor %}

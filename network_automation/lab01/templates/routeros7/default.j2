@@ -1,0 +1,3 @@
+{% for iface in interfaces %}
+/ip/address/add address={{ iface.ip }}/{{ iface.mask }} interface={{ iface.name }}
+{% endfor %}
