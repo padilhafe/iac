@@ -1,0 +1,46 @@
+# Huawei AR1000v
+system-view
+aaa
+local-user automacao password irreversible-cipher Changeme@123
+local-user automacao level 3
+local-user automacao service-type ssh
+quit
+stelnet server enable
+ssh user automacao service-type all
+ssh user automacao authentication-type password
+
+user-interface vty 1 4
+authentication-mode aaa
+idle-timeout 20 0
+protocol inbound ssh
+
+interface Ethernet 1/0/0
+ip address dhcp-alloc 
+quit
+
+
+# Huawei NE40
+system-view
+undo dcn
+y
+commit
+aaa
+local-user automacao password irreversible-cipher Changeme@123
+local-user automacao level 3
+local-user automacao service-type ssh
+quit
+stelnet server enable
+ssh user automacao service-type all
+ssh user automacao authentication-type password
+
+user-interface vty 1 4
+authentication-mode aaa
+protocol inbound ssh
+quit
+
+interface Ethernet 1/0/0
+ip address dhcp-alloc 
+quit
+
+# Mikrotik
+/system/user/add name=automacao password=Password@123 group=full
