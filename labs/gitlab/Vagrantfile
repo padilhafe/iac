@@ -1,0 +1,45 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "debian/bookworm64"
+
+  # =========================
+  # GitLab Server
+  # =========================
+  config.vm.define "gitlab-server" do |gitlab|
+    gitlab.vm.hostname = "gitlab-server"
+    gitlab.vm.network "private_network", ip: "192.168.56.10"
+
+    gitlab.vm.provider "virtualbox" do |vb|
+      vb.name   = "gitlab-server"
+      vb.memory = 8192
+      vb.cpus   = 4
+    end
+  end
+
+  # =========================
+  # GitLab Runner
+  # =========================
+  config.vm.define "gitlab-runner" do |runner|
+    runner.vm.hostname = "gitlab-runner"
+    runner.vm.network "private_network", ip: "192.168.56.11"
+
+    runner.vm.provider "virtualbox" do |vb|
+      vb.name   = "gitlab-runner"
+      vb.memory = 2048
+      vb.cpus   = 2
+    end
+  end
+
+  # =========================
+  # Debian Server
+  # =========================
+  config.vm.define "nginx" do |debian|
+    debian.vm.hostname = "nginx"
+    debian.vm.network "private_network", ip: "192.168.56.12"
+
+    debian.vm.provider "virtualbox" do |vb|
+      vb.name   = "nginx"
+      vb.memory = 2048
+      vb.cpus   = 2
+    end
+  end
+end
